@@ -65,6 +65,32 @@ export type CustomersTableType = {
   total_paid: number;
 };
 
+export type BranchesTableType = {
+  id: string;
+  name: string;
+  pastor_id: string;
+  pastor_name: string
+  city: string;
+  post_code: string;
+};
+
+export type MembersTableType = {
+  id: string;
+  name: string;
+  gender: string;
+  email: string;
+  image_url: string;
+  date_of_birth: string;
+  phone: string;
+  address_line_1: string;
+  address_line_2: string;
+  county: string;
+  city: string;
+  country: string;
+  is_baptised: boolean;
+  branch_name: string;
+};
+
 export type FormattedCustomersTable = {
   id: string;
   name: string;

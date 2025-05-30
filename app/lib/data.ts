@@ -1,10 +1,12 @@
 import postgres from 'postgres';
 import {
+  BranchesTableType,
   CustomerField,
   CustomersTableType,
   InvoiceForm,
   InvoicesTable,
   LatestInvoiceRaw,
+  MembersTableType,
   Revenue,
 } from './definitions';
 import { formatCurrency } from './utils';
@@ -219,5 +221,59 @@ export async function fetchFilteredCustomers(query: string) {
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch customer table.');
+  }
+}
+
+
+export async function fetchFilteredBranches(query: string) {
+  try {
+    const branches = await sql<BranchesTableType[]>`
+    Select 
+      branches.id, 
+      branches.name, 
+      branches."pastorId" as "pastor_id", 
+      members.name as "pastor_name", 
+      branches.city, 
+      branches."postCode" as "post_code"
+      from branches 
+      LEFT JOIN members on branches."pastorId" = members.id where branches.name ILIKE ${`%${query}%`}
+        order by branches.name asc
+	  `;
+
+    return branches;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch branch table.');
+  }
+}
+
+
+export async function fetchFilteredMembers(query: string) {
+  try {
+    const members = await sql<MembersTableType[]>`
+      Select 
+      members.id, 
+      members.name, 
+      members.gender,
+      members.email,
+      members.image_url,
+      members.date_of_birth,
+      members.phone,
+      members.address_line_1,
+      members.address_line_2,
+      members.county,
+      members.city,
+      members.country,
+      members.is_baptised,
+      branches.name as branch_name
+      from members 
+      LEFT JOIN branches on members.branch_id = branches.id where members.name ILIKE ${`%${query}%`}
+        order by members.name asc
+	  `;
+
+    return members;  
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch branch table.');
   }
 }
